@@ -1,0 +1,1567 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "v1",
+    "title": "Plan Info API V2"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com/v2/plan-info"
+    },
+    {
+      "url": "https://api.example.com/v2/plan-info"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/idv/plans/{planCode}/rate-calculator": {
+      "post": {
+        "summary": "Calculate Rate for an IDV Plan",
+        "description": "Returns the rate for the provided plan.",
+        "parameters": [
+          {
+            "name": "planCode",
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RateRequest"
+              }
+            }
+          }
+        },
+        "tags": [
+          "IDV"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/idv/plans": {
+      "get": {
+        "summary": "IDV Plan List",
+        "description": "Returns a list of IDV plans",
+        "parameters": [
+          {
+            "name": "state",
+            "schema": {
+              "$ref": "#/components/schemas/SearchIDVRequest/properties/state"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "lob",
+            "schema": {
+              "$ref": "#/components/schemas/SearchIDVRequest/properties/lob"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "agentType",
+            "schema": {
+              "$ref": "#/components/schemas/SearchIDVRequest/properties/agentType"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "planName",
+            "schema": {
+              "$ref": "#/components/schemas/SearchIDVRequest/properties/planName"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "isActive",
+            "schema": {
+              "$ref": "#/components/schemas/SearchIDVRequest/properties/isActive"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "limit",
+            "schema": {
+              "$ref": "#/components/schemas/SearchIDVRequest/properties/limit"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "pageToken",
+            "schema": {
+              "$ref": "#/components/schemas/SearchIDVRequest/properties/pageToken"
+            },
+            "in": "query",
+            "required": false
+          }
+        ],
+        "tags": [
+          "IDV"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IDVPlanListResponse"
+                }
+              },
+              "application/fhir+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IDVPlanListResponse"
+                },
+                "example": {
+                  "resourceType": "Bundle",
+                  "type": "collection",
+                  "link": [
+                    {
+                      "relation": "self",
+                      "url": "https://api.example.com"
+                    }
+                  ],
+                  "entry": [
+                    {
+                      "fullUrl": "https://api.example.com",
+                      "resource": {
+                        "resourceType": "InsurancePlan",
+                        "status": "active",
+                        "name": "Preventive Plus",
+                        "id": "5TPP3-C23",
+                        "coverageArea": [
+                          {
+                            "display": "KY"
+                          }
+                        ],
+                        "identifier": [
+                          {
+                            "system": "http://swagger.humana.io/fhir-definitions/idv-plans/planCode1",
+                            "value": "5TPP3"
+                          },
+                          {
+                            "system": "http://swagger.humana.io/fhir-definitions/idv-plans/planCode2",
+                            "value": "C23"
+                          },
+                          {
+                            "system": "http://swagger.humana.io/fhir-definitions/idv-plans/planId",
+                            "value": "994"
+                          }
+                        ],
+                        "extension": [
+                          {
+                            "url": "http://swagger.humana.io/fhir-definitions/idv-plans/agentType",
+                            "valueString": "Career"
+                          }
+                        ],
+                        "period": {
+                          "end": "2022-01-01"
+                        },
+                        "plan": [
+                          {
+                            "type": {
+                              "coding": [
+                                {
+                                  "system": "http://swagger.humana.io/fhir-definitions/idv-plans/lob",
+                                  "code": "DENTAL"
+                                }
+                              ]
+                            },
+                            "extension": [
+                              {
+                                "url": "http://swagger.humana.io/fhir-definitions/idv-plans/waitingPeriods",
+                                "valueString": "No waiting period for Preventive Services  Six month for Basic Services"
+                              },
+                              {
+                                "url": "http://swagger.humana.io/fhir-definitions/idv-plans/coInsuranceOptions",
+                                "valueString": "100/50/0 in-network 70/30/0 out of network"
+                              },
+                              {
+                                "url": "http://swagger.humana.io/fhir-definitions/idv-plans/individualDeductible",
+                                "valueString": "$50"
+                              },
+                              {
+                                "url": "http://swagger.humana.io/fhir-definitions/idv-plans/familyDeductible",
+                                "valueString": "$150"
+                              }
+                            ],
+                            "generalCost": [
+                              {
+                                "type": {
+                                  "coding": [
+                                    {
+                                      "system": "http://swagger.humana.io/fhir-definitions/idv-plans/rateFactor",
+                                      "code": "rateFactor"
+                                    }
+                                  ]
+                                },
+                                "cost": {
+                                  "value": 23.24,
+                                  "currency": "USD"
+                                },
+                                "comment": "Age Rate Factor",
+                                "extension": [
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/beginAttainedAge",
+                                    "valueString": "0"
+                                  },
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/endAttainedAge",
+                                    "valueString": "150"
+                                  },
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/policyBeginIssueAge",
+                                    "valueString": "0"
+                                  },
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/policyEndIssueAge",
+                                    "valueString": "22"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": {
+                                  "coding": [
+                                    {
+                                      "system": "http://swagger.humana.io/fhir-definitions/idv-plans/rateFactor",
+                                      "code": "rateFactor"
+                                    }
+                                  ]
+                                },
+                                "cost": {
+                                  "value": 22.24,
+                                  "currency": "USD"
+                                },
+                                "comment": "Age Rate Factor",
+                                "extension": [
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/beginAttainedAge",
+                                    "valueString": "0"
+                                  },
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/endAttainedAge",
+                                    "valueString": "150"
+                                  },
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/policyBeginIssueAge",
+                                    "valueString": "22"
+                                  },
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/policyEndIssueAge",
+                                    "valueString": "60"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": {
+                                  "coding": [
+                                    {
+                                      "system": "http://swagger.humana.io/fhir-definitions/idv-plans/rateFactor",
+                                      "code": "rateFactor"
+                                    }
+                                  ]
+                                },
+                                "cost": {
+                                  "value": 23.24,
+                                  "currency": "USD"
+                                },
+                                "comment": "Age Rate Factor",
+                                "extension": [
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/beginAttainedAge",
+                                    "valueString": "0"
+                                  },
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/endAttainedAge",
+                                    "valueString": "150"
+                                  },
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/policyBeginIssueAge",
+                                    "valueString": "60"
+                                  },
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/policyEndIssueAge",
+                                    "valueString": "150"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": {
+                                  "coding": [
+                                    {
+                                      "system": "http://swagger.humana.io/fhir-definitions/idv-plans/monthlyAssociationFee",
+                                      "code": "monthlyAssociationFee"
+                                    }
+                                  ]
+                                },
+                                "cost": {
+                                  "value": 0.75,
+                                  "currency": "USD"
+                                },
+                                "comment": "Monthly Association Fee"
+                              },
+                              {
+                                "type": {
+                                  "coding": [
+                                    {
+                                      "system": "http://swagger.humana.io/fhir-definitions/idv-plans/monthlyAdminFee",
+                                      "code": "monthlyAdminFee"
+                                    }
+                                  ]
+                                },
+                                "cost": {
+                                  "value": 1,
+                                  "currency": "USD"
+                                },
+                                "comment": "Monthly Admin Fee"
+                              },
+                              {
+                                "type": {
+                                  "coding": [
+                                    {
+                                      "system": "http://swagger.humana.io/fhir-definitions/idv-plans/enrollmentFee",
+                                      "code": "enrollmentFee"
+                                    }
+                                  ]
+                                },
+                                "cost": {
+                                  "value": 35,
+                                  "currency": "USD"
+                                },
+                                "comment": "Enrollment Fee"
+                              }
+                            ]
+                          }
+                        ],
+                        "coverage": [
+                          {
+                            "type": {
+                              "coding": [
+                                {
+                                  "display": "Dental"
+                                }
+                              ]
+                            },
+                            "benefit": [
+                              {
+                                "type": {
+                                  "coding": [
+                                    {
+                                      "display": "Surgical extractions"
+                                    }
+                                  ]
+                                },
+                                "extension": [
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/planCategory",
+                                    "valueString": "Basic Services"
+                                  },
+                                  {
+                                    "url": "http://swagger.humana.io/fhir-definitions/idv-plans/frequency",
+                                    "valueString": "Two every calendar year"
+                                  }
+                                ],
+                                "limit": [
+                                  {
+                                    "code": {
+                                      "coding": [
+                                        {
+                                          "system": "http://swagger.humana.io/fhir-definitions/idv-plans/inNetworkDetails",
+                                          "code": "inNetworkDetails",
+                                          "display": "inNetworkDetails"
+                                        }
+                                      ],
+                                      "text": "50% after deductible"
+                                    }
+                                  },
+                                  {
+                                    "code": {
+                                      "coding": [
+                                        {
+                                          "system": "http://swagger.humana.io/fhir-definitions/idv-plans/outOfNetworkDetails",
+                                          "code": "outOfNetworkDetails",
+                                          "display": "outOfNetworkDetails"
+                                        }
+                                      ],
+                                      "text": "30% after deductible"
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "alias": [
+                          "Preventive Plus and Preventive Plus for Veterans (Traditional Preferred Network)",
+                          "NJ IND PPO MNTHLY CAR. N2013"
+                        ],
+                        "ownedBy": {
+                          "display": "Humana"
+                        },
+                        "type": [
+                          {
+                            "coding": [
+                              {
+                                "system": "http://swagger.humana.io/fhir-definitions/idv-plans/productType",
+                                "code": "PPO"
+                              }
+                            ]
+                          },
+                          {
+                            "coding": [
+                              {
+                                "system": "http://swagger.humana.io/fhir-definitions/idv-plans/lob",
+                                "code": "DENTAL"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/medicare/plans": {
+      "get": {
+        "summary": "Medicare Plan List",
+        "description": "Returns a list of Medicare plans",
+        "parameters": [
+          {
+            "name": "lob",
+            "in": "query",
+            "description": "Type of plan",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "ALL",
+              "enum": [
+                "ALL",
+                "MA",
+                "MA_WITHOUT_SNP",
+                "PDP"
+              ]
+            }
+          },
+          {
+            "name": "fips",
+            "in": "query",
+            "required": true,
+            "description": "Fips code of the area for which you are requesting plan information.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "effectiveDate",
+            "in": "query",
+            "required": false,
+            "description": "The date for which you are requesting plan information. Defaults to current date.  Dates should follow ISO format, 2017-04-19.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2021-01-01"
+            }
+          }
+        ],
+        "tags": [
+          "Medicare"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicarePlanListResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/osbs": {
+      "get": {
+        "summary": "OSB List",
+        "description": "Returns a list of OSBs",
+        "parameters": [
+          {
+            "name": "customerNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "benefitSequenceNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "effectiveDate",
+            "in": "query",
+            "required": false,
+            "description": "The date for which you are requesting plan information. Defaults to current date.  Dates should follow ISO format, 2017-04-19.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2021-01-01"
+            }
+          }
+        ],
+        "tags": [
+          "OSB"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OSBListResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/medicare-supplement/plans": {
+      "get": {
+        "summary": "Medicare Supplement Plan List",
+        "description": "Returns a list of Medicare Supplement plans",
+        "parameters": [
+          {
+            "name": "zipCode",
+            "in": "query",
+            "description": "Zip code of the area for which you are requesting plan information.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fipsCode",
+            "in": "query",
+            "required": true,
+            "description": "Fips code of the area for which you are requesting plan information.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "effectiveDate",
+            "in": "query",
+            "required": false,
+            "description": "The date for which you are requesting plan information. Defaults to current date.  Dates should follow ISO format, 2017-04-19.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2021-01-01"
+            }
+          }
+        ],
+        "tags": [
+          "Medicare Supplement"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedSuppListResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/medicare-supplement/quotes": {
+      "get": {
+        "summary": "Medicare Supplement Quote List",
+        "description": "Returns a list of Medicare Supplement Quotes",
+        "parameters": [
+          {
+            "name": "zipCode",
+            "in": "query",
+            "description": "Zip code of the area for which you are requesting plan information.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fipsCode",
+            "in": "query",
+            "required": true,
+            "description": "Fips code of the area for which you are requesting plan information.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isOEP",
+            "in": "query",
+            "required": true,
+            "description": "Is this during OEP",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "isGIStatus",
+            "in": "query",
+            "required": true,
+            "description": "GI Status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "hadCoveragePrior65",
+            "in": "query",
+            "required": true,
+            "description": "Did applicant have coverage prior to 65?",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "isSmoker",
+            "in": "query",
+            "required": true,
+            "description": "Is applicant a smoker?",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "required": true,
+            "description": "Gender",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "M",
+                "F"
+              ]
+            }
+          },
+          {
+            "name": "dob",
+            "in": "query",
+            "required": true,
+            "description": "Date of birth. Dates should follow ISO format, 2017-04-19.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2021-01-01"
+            }
+          },
+          {
+            "name": "partADate",
+            "in": "query",
+            "required": true,
+            "description": "Part A Date. Dates should follow ISO format, 2017-04-19.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2021-01-01"
+            }
+          },
+          {
+            "name": "partBDate",
+            "in": "query",
+            "required": true,
+            "description": "Part B Date. Dates should follow ISO format, 2017-04-19.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2021-01-01"
+            }
+          },
+          {
+            "name": "effectiveDate",
+            "in": "query",
+            "required": false,
+            "description": "The date for which you are requesting plan information. Defaults to current date.  Dates should follow ISO format, 2017-04-19.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2021-01-01"
+            }
+          }
+        ],
+        "tags": [
+          "Medicare Supplement"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedSuppQuoteResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MedSuppQuoteResponse": {
+        "properties": {
+          "quotes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "planId": {
+                  "type": "string",
+                  "format": "color"
+                },
+                "planName": {
+                  "type": "string"
+                },
+                "planType": {
+                  "type": "string"
+                },
+                "planSource": {
+                  "type": "string"
+                },
+                "undiscountedQuote": {
+                  "type": "number"
+                },
+                "discounts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "discountId": {
+                        "type": "number"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "amount": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "number"
+                          },
+                          "unit": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "dollarValue": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                },
+                "documents": {
+                  "type": "object",
+                  "properties": {
+                    "outlineOfCoverageLink": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "choosingMedigapPolicyLink": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "MedSuppListResponse": {
+        "properties": {
+          "plans": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "color"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "minimumPremium": {
+                  "type": "number"
+                },
+                "maximumPremium": {
+                  "type": "number"
+                },
+                "discounts": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "premiumWarningMessage": {
+                  "type": "string"
+                },
+                "deductiblesAndCosts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "amount": {
+                        "type": "number"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "planBenefits": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "coveragePercentage": {
+                        "type": "number"
+                      },
+                      "limitAmount": {
+                        "type": "number"
+                      },
+                      "displayValue": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "isHealthyLiving": {
+                  "type": "boolean"
+                },
+                "startDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "documents": {
+                  "type": "object",
+                  "properties": {
+                    "outlineOfCoverageLink": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "choosingMedigapPolicyLink": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                },
+                "dentalCode": {
+                  "type": "string"
+                },
+                "visionCode": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "OSBListResponse": {
+        "properties": {
+          "osbs": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "planYear": {
+                  "type": "string"
+                },
+                "customerNumber": {
+                  "type": "string"
+                },
+                "benefitSequenceNumber": {
+                  "type": "string"
+                },
+                "startDate": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "package": {
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "premium": {
+                  "type": "number"
+                },
+                "effectiveDate": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "dentalCode": {
+                  "type": "string"
+                },
+                "visionCode": {
+                  "type": "string"
+                },
+                "hearingCode": {
+                  "type": "string"
+                },
+                "internationalCode": {
+                  "type": "string"
+                },
+                "otherCode": {
+                  "type": "string"
+                },
+                "pdfLink": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "RateRequest": {
+        "properties": {
+          "memberCount": {
+            "type": "number",
+            "description": "Required if plan is tier rated.",
+            "minimum": 1
+          },
+          "ages": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Required if plan is age rated. Either dobs or ages is required.",
+            "items": {
+              "type": "number"
+            }
+          },
+          "dobs": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Required if plan is age rated. Either dobs or ages is required.",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "effectiveDate": {
+            "description": "Required if plan is age rated and dobs is passed in.",
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "RateResponse": {
+        "properties": {
+          "premiumAmount": {
+            "type": "number"
+          },
+          "adminFee": {
+            "type": "number"
+          },
+          "applicationFee": {
+            "type": "number"
+          },
+          "associationFee": {
+            "type": "number"
+          },
+          "enrollmentFee": {
+            "type": "number"
+          },
+          "totalInitialPayment": {
+            "type": "number"
+          }
+        }
+      },
+      "SearchIDVRequest": {
+        "properties": {
+          "planName": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "example": "KY",
+            "maxLength": 2,
+            "nullable": true,
+            "pattern": "^[A-Z]{2}$"
+          },
+          "lob": {
+            "type": "string",
+            "nullable": true,
+            "default": "ALL",
+            "enum": [
+              "DENTAL",
+              "VISION",
+              "DVH",
+              "ALL"
+            ]
+          },
+          "agentType": {
+            "type": "string",
+            "nullable": true,
+            "default": "ALL",
+            "enum": [
+              "DELEGATED",
+              "CAREER",
+              "ALL"
+            ]
+          },
+          "isActive": {
+            "type": "boolean",
+            "nullable": true,
+            "default": true
+          },
+          "limit": {
+            "type": "number",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 100,
+            "nullable": true
+          },
+          "pageToken": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Location": {
+        "properties": {
+          "countyName": {
+            "type": "string",
+            "description": "Name of county"
+          },
+          "countyFips": {
+            "type": "string",
+            "description": "County FIPS code"
+          },
+          "state": {
+            "type": "string",
+            "description": "State Code"
+          }
+        }
+      },
+      "MedicarePlan": {
+        "properties": {
+          "guideId": {
+            "type": "string"
+          },
+          "contractNumber": {
+            "type": "string",
+            "description": "Contract number of plan"
+          },
+          "pbp": {
+            "type": "string",
+            "description": "PBP of plan"
+          },
+          "segment": {
+            "type": "string",
+            "description": "Segment code of plan"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of plan"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of Plan"
+          },
+          "customerNumber": {
+            "type": "string"
+          },
+          "benefitSequenceNumber": {
+            "type": "string"
+          },
+          "effectiveDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "prescriptionDrugCoverage": {
+            "type": "boolean"
+          },
+          "partADeductible": {
+            "type": "number",
+            "format": "double",
+            "example": 1.05
+          },
+          "partBDeductible": {
+            "type": "number",
+            "format": "double",
+            "example": 2.05
+          },
+          "hospitalYouPay": {
+            "type": "number",
+            "format": "double",
+            "example": 3.22
+          },
+          "hospitalYouPayDescription": {
+            "type": "string"
+          },
+          "hospitalYouPayTier1": {
+            "type": "string"
+          },
+          "hospitalYouPayTier2": {
+            "type": "string"
+          },
+          "hospitalYouPayTier3": {
+            "type": "string"
+          },
+          "hospitalYouPayTier4": {
+            "type": "string"
+          },
+          "maxMedicalOutOfPocket": {
+            "type": "number",
+            "format": "double",
+            "example": 6700.23
+          },
+          "maxMedicalOutOutPocket": {
+            "type": "number",
+            "format": "double",
+            "example": 6700.23
+          },
+          "myCareCopay1": {
+            "type": "number",
+            "format": "double",
+            "example": 34.23
+          },
+          "myCareCopay": {
+            "type": "number",
+            "format": "double",
+            "example": 1.23
+          },
+          "officeVisitCopay1": {
+            "type": "number",
+            "format": "double",
+            "example": 1.04
+          },
+          "officeVisitCopay": {
+            "type": "number",
+            "format": "double",
+            "example": 24.543
+          },
+          "specialistCopay": {
+            "type": "number",
+            "format": "double",
+            "example": 650.3
+          },
+          "specialistCopayDescription": {
+            "type": "string"
+          },
+          "premium": {
+            "type": "number",
+            "format": "double",
+            "example": 0.05
+          },
+          "annualMedicalDeductible": {
+            "type": "number",
+            "format": "double",
+            "example": 0.6
+          },
+          "annualPrescriptionDeductible": {
+            "type": "number",
+            "format": "double",
+            "example": 0.05
+          },
+          "lisIndicator": {
+            "type": "boolean",
+            "description": "Indicates whether the plan supports low-income subsidy assitance."
+          },
+          "lisPremium25": {
+            "type": "number",
+            "format": "double",
+            "example": 2.43,
+            "description": "Low-income subsidy 25%"
+          },
+          "lisPremium50": {
+            "type": "number",
+            "format": "double",
+            "example": 2.43,
+            "description": "Low-income subsidy 50%"
+          },
+          "lisPremium75": {
+            "type": "number",
+            "format": "double",
+            "example": 2.43,
+            "description": "Low-income subsidy 75%"
+          },
+          "lisPremium100": {
+            "type": "number",
+            "format": "double",
+            "example": 2.43,
+            "description": "Low-income subsidy 100%"
+          },
+          "englishSummaryOfBenefits": {
+            "type": "string",
+            "description": "Link to summary of benefits pdf in English"
+          },
+          "spanishSummaryOfBenefits": {
+            "type": "string",
+            "description": "Link to summary of benefits pdf in Spanish"
+          },
+          "englishEvidenceOfCoverage": {
+            "type": "string",
+            "description": "Link to evidence of coverage pdf in English"
+          },
+          "spanishEvidenceOfCoverage": {
+            "type": "string",
+            "description": "Link to evidence of coverage pdf in Spanish"
+          },
+          "englishPlanRatingDocument": {
+            "type": "string",
+            "description": "Link to plan rating pdf in English"
+          },
+          "spanishPlanRatingDocument": {
+            "type": "string",
+            "description": "Link to plan rating pdf in Spanish"
+          },
+          "englishPrescriptionDrugGuide": {
+            "type": "string",
+            "description": "Link to prescription drug guide pdf in English"
+          },
+          "spanishPrescriptionDrugGuide": {
+            "type": "string",
+            "description": "Link to prescription drug guide pdf in Spanish"
+          },
+          "providerDirectory": {
+            "type": "string",
+            "description": "Link to provider directory."
+          },
+          "planStarRating": {
+            "type": "boolean"
+          },
+          "providerNetworkId": {
+            "type": "string"
+          }
+        }
+      },
+      "MedicarePlanListResponse": {
+        "properties": {
+          "plans": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MedicarePlan"
+            }
+          }
+        }
+      },
+      "IDVPlan": {
+        "properties": {
+          "planCode": {
+            "type": "string"
+          },
+          "planId": {
+            "type": "string"
+          },
+          "inactivatedDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "agentType": {
+            "type": "string",
+            "enum": [
+              "DELEGATED",
+              "CAREER"
+            ]
+          },
+          "lob": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "planCode1": {
+            "type": "string"
+          },
+          "planCode2": {
+            "type": "string"
+          },
+          "planName": {
+            "type": "string"
+          },
+          "displayPlanName": {
+            "type": "string"
+          },
+          "stateOfIssue": {
+            "type": "string"
+          },
+          "productType": {
+            "type": "string"
+          },
+          "deductible": {
+            "type": "string"
+          },
+          "annualMaximum": {
+            "type": "string"
+          },
+          "coInsuranceOptions": {
+            "type": "string"
+          },
+          "individualDeductible": {
+            "type": "string"
+          },
+          "familyDeductible": {
+            "type": "string"
+          },
+          "waitingPeriods": {
+            "type": "string"
+          },
+          "benefitsList": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "benefitDetail": {
+                  "type": "string"
+                },
+                "adaDescription": {
+                  "type": "string"
+                },
+                "planCategory": {
+                  "type": "string"
+                },
+                "frequency": {
+                  "type": "string"
+                },
+                "inNetworkDetails": {
+                  "type": "string"
+                },
+                "outOfNetworkDetails": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "rateDetailsList": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "premiumSingle": {
+                  "type": "string"
+                },
+                "premiumSingle1": {
+                  "type": "string"
+                },
+                "premiumSingle2": {
+                  "type": "string"
+                },
+                "premiumSingle3": {
+                  "type": "string"
+                },
+                "premiumSingle4": {
+                  "type": "string"
+                },
+                "enrollmentFee": {
+                  "type": "string"
+                },
+                "monthlyAdminFee": {
+                  "type": "string"
+                },
+                "monthlyAssociationFee": {
+                  "type": "string"
+                },
+                "policyBeginIssueAge": {
+                  "type": "string"
+                },
+                "policyEndIssueAge": {
+                  "type": "string"
+                },
+                "beginAttainedAge": {
+                  "type": "string"
+                },
+                "endAttainedAge": {
+                  "type": "string"
+                },
+                "rateFactor": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "IDVPlanListResponse": {
+        "properties": {
+          "plans": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IDVPlan"
+            }
+          },
+          "pageToken": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "properties": {
+          "code": {
+            "description": "An application-specific error code, expressed as a string value.",
+            "example": "DA500-000",
+            "type": "string"
+          },
+          "detail": {
+            "description": "A human-readable explanation specific to this occurrence of the problem. Like title, this fieldÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢s value can be localized.",
+            "example": "Enter a value in the First Name field. If you do not know the first name then enter a space. The First Name field cannot be submitted with a null.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "detail"
+        ],
+        "type": "object"
+      },
+      "Errors": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "type": "array"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-humana-api-key"
+      }
+    }
+  }
+}

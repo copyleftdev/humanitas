@@ -1,0 +1,55 @@
+{
+  "name": "@humanitas/sdk",
+  "version": "0.1.0",
+  "description": "Humanitas — an elite, Effect-native TypeScript SDK for the Humana Data Exchange APIs (unofficial).",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "effect",
+    "openapi",
+    "sdk",
+    "typescript",
+    "humana",
+    "fhir",
+    "healthcare",
+    "apigee"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "gen": "bash scripts/gen.sh",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "tsx test/run.ts",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "peerDependencies": {
+    "@effect/platform": ">=0.72.0",
+    "effect": ">=3.12.0"
+  },
+  "devDependencies": {
+    "@effect/platform": "^0.72.0",
+    "effect": "^3.12.0",
+    "openapi-typescript": "^7.13.0",
+    "swagger2openapi": "^7.0.8",
+    "tsx": "^4.22.0",
+    "typescript": "^5.7.0"
+  }
+}

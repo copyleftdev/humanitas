@@ -1,0 +1,1633 @@
+{
+  "basePath": "/v1/medicare-enrollment",
+  "consumes": [
+    "application/json"
+  ],
+  "definitions": {
+    "ACHPayment": {
+      "properties": {
+        "account_number": {
+          "maxLength": 16,
+          "type": "string"
+        },
+        "account_type": {
+          "enum": [
+            "none",
+            "checking",
+            "savings"
+          ],
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 28,
+          "type": "string"
+        },
+        "routing_number": {
+          "maxLength": 9,
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "account_number",
+        "routing_number",
+        "account_type"
+      ]
+    },
+    "CreditCardPayment": {
+      "properties": {
+        "card_holder": {
+          "description": "Name of the owner of the credit card.",
+          "type": "string"
+        },
+        "expiration": {
+          "description": "Credit card expiration date, in month/year format.",
+          "example": "7/20",
+          "maxLength": 8,
+          "type": "string"
+        },
+        "number": {
+          "description": "Credit Card number",
+          "maxLength": 16,
+          "type": "string"
+        },
+        "type": {
+          "description": "Credit Card type",
+          "enum": [
+            "discover",
+            "visa",
+            "mastercard",
+            "amex",
+            "none"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "number",
+        "card_holder",
+        "expiration"
+      ]
+    },
+    "EnrollmentStatusResponse": {
+      "properties": {
+        "agent": {
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "san": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "applicant": {
+          "properties": {
+            "first_name": {
+              "type": "string"
+            },
+            "last_name": {
+              "type": "string"
+            },
+            "middle_initial": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "application": {
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "last_modified_on": {
+              "description": "Date that the status was last changed.",
+              "format": "date",
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "plan": {
+          "properties": {
+            "effective_date": {
+              "format": "date",
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "year": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      }
+    },
+    "OSB": {
+      "properties": {
+        "ben_seq_number": {
+          "type": "string"
+        },
+        "cust_number": {
+          "type": "string"
+        },
+        "dental_code": {
+          "type": "string"
+        },
+        "hearing_code": {
+          "type": "string"
+        },
+        "international_code": {
+          "type": "string"
+        },
+        "other_code": {
+          "type": "string"
+        },
+        "package_description": {
+          "type": "string"
+        },
+        "package_key": {
+          "type": "string"
+        },
+        "pdf_name": {
+          "type": "string"
+        },
+        "plan_year": {
+          "example": "2017-07-14",
+          "format": "date",
+          "type": "string"
+        },
+        "premium": {
+          "example": 32.65,
+          "format": "double",
+          "type": "number"
+        },
+        "vision_code": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "premium"
+      ]
+    },
+    "address": {
+      "description": "Standard US address object",
+      "properties": {
+        "address_line_one": {
+          "maxLength": 32,
+          "type": "string"
+        },
+        "address_line_two": {
+          "maxLength": 32,
+          "type": "string"
+        },
+        "city": {
+          "maxLength": 20,
+          "type": "string"
+        },
+        "county": {
+          "type": "string"
+        },
+        "fips": {
+          "maxLength": 5,
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip_code": {
+          "maxLength": 10,
+          "type": "string"
+        }
+      },
+      "required": [
+        "address_line_one",
+        "city",
+        "state",
+        "zip_code"
+      ],
+      "type": "object"
+    },
+    "agent": {
+      "description": "The writing agent",
+      "properties": {
+        "agent_email_address": {
+          "type": "string"
+        },
+        "agent_name": {
+          "type": "string"
+        },
+        "agent_san": {
+          "example": 9282744,
+          "type": "integer"
+        },
+        "notify_when_digitally_signed": {
+          "description": "If the answer to this question is \"Y\" then agent_email_address is required.",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "agent_name",
+        "agent_san"
+      ],
+      "type": "object"
+    },
+    "applicant": {
+      "description": "The insured",
+      "properties": {
+        "chronic_conditions": {
+          "$ref": "#/definitions/chronic_conditions"
+        },
+        "date_of_birth": {
+          "description": "ISO format date string, YYYY-MM-DD",
+          "type": "string"
+        },
+        "email_address": {
+          "maxLength": 60,
+          "type": "string"
+        },
+        "first_name": {
+          "maxLength": 40,
+          "type": "string"
+        },
+        "gender": {
+          "enum": [
+            "male",
+            "female"
+          ],
+          "type": "string"
+        },
+        "hospital_insurance_parta": {
+          "description": "ISO format date string, YYYY-MM-DD",
+          "example": "2012-03-01",
+          "format": "date",
+          "type": "string"
+        },
+        "language_preference": {
+          "description": "The preferred language of the applicant. If this value is null the default will be English.",
+          "enum": [
+            "English",
+            "Spanish",
+            "Other",
+            "Arabic",
+            "Afrikaans",
+            "French Creole",
+            "Spanish Creole",
+            "Armenian",
+            "Bengali",
+            "Bulgarian",
+            "Burmese",
+            "Cebuano",
+            "Chinese",
+            "Mandarin",
+            "Navajo",
+            "Creole",
+            "Czech",
+            "Dutch",
+            "Egyptian",
+            "Portuguese",
+            "Estonian",
+            "Farsi",
+            "Tagalog",
+            "Filipino",
+            "Vietnamese",
+            "Finnish",
+            "French",
+            "German",
+            "Greek",
+            "Gujarati",
+            "Haitian Creole",
+            "Hausa",
+            "Hebrew",
+            "Hindi",
+            "Hmong",
+            "Hungarian",
+            "Igbo",
+            "Indonesian",
+            "Italian",
+            "Japanese",
+            "Kannada",
+            "Kashmiri",
+            "Khmer",
+            "Korean",
+            "Lao",
+            "Luganda",
+            "Malayalam",
+            "Marathi",
+            "Nepali",
+            "Nigerian",
+            "Punjabi",
+            "Papiamento",
+            "Persian",
+            "Polish",
+            "Romanian",
+            "Russian",
+            "American sign lang",
+            "Sindhi",
+            "Slovak",
+            "Sinhalese",
+            "Somali",
+            "Serbian",
+            "Swahili",
+            "Swedish",
+            "Tamil",
+            "Telugu",
+            "Thai",
+            "Turkish",
+            "Ukrainian",
+            "Urdu",
+            "Yiddish",
+            "Cantonese",
+            "Zulu"
+          ],
+          "default": "English",
+          "example": "English",
+          "type": "string"
+        },
+        "alternate_language_format": {
+          "type": "string",
+          "description": "If the applicant has a different format for their preferred language.",
+          "enum": [
+            "Audio",
+            "Large Print",
+            "Accessible Screen Reader PDF",
+            "Oral Over the Phone",
+            "Braille"
+          ]
+        },
+        "last_name": {
+          "maxLength": 40,
+          "type": "string"
+        },
+        "mailing_address": {
+          "$ref": "#/definitions/address"
+        },
+        "medical_insurance_partb": {
+          "description": "ISO format date string, YYYY-MM-DD",
+          "example": "2012-03-01",
+          "format": "date",
+          "type": "string"
+        },
+        "medicare_claim_number": {
+          "type": "string"
+        },
+        "middle_initial": {
+          "maxLength": 1,
+          "type": "string"
+        },
+        "permanent_address": {
+          "$ref": "#/definitions/address"
+        },
+        "phone_number": {
+          "$ref": "#/definitions/phone_number"
+        },
+        "phone_type": {
+          "$ref": "#/definitions/phone_type"
+        },
+        "ssn": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "first_name",
+        "last_name",
+        "gender",
+        "date_of_birth",
+        "permanent_address",
+        "medicare_claim_number",
+        "hospital_insurance_parta",
+        "medical_insurance_partb",
+        "phone_number"
+      ],
+      "type": "object"
+    },
+    "application": {
+      "description": "The main enrollment submission cotainer. This object holds all of the data that will be submitted.",
+      "properties": {
+        "agent": {
+          "$ref": "#/definitions/agent"
+        },
+        "applicant": {
+          "$ref": "#/definitions/applicant"
+        },
+        "application_date": {
+          "description": "The application data represents the actual date the enrollment was submitted to Humana. For the production API this field will not be available. This field will be available for the test API so that you can change the submitted data to simulate success and error conditions that are dependent on the submission date.  ISO Format date string, YYYY-MM-DD",
+          "example": "2016-08-01",
+          "format": "date",
+          "type": "string"
+        },
+        "do_you_or_your_spouse_work": {
+          "description": "Do you or your spouse work?",
+          "type": "boolean"
+        },
+        "emergency_contact": {
+          "$ref": "#/definitions/emergency_contact"
+        },
+        "end_stage_renal_disease": {
+          "$ref": "#/definitions/end_stage_renal_disease"
+        },
+        "enrollment_type": {
+          "enum": [
+            "AEP",
+            "IEP",
+            "IEPD",
+            "ICEP",
+            "SEP",
+            "OEP",
+            "OEP-N",
+            "OEPN",
+            "OEP-I",
+            "OEPI",
+            "OEPNEW"
+          ],
+          "type": "string"
+        },
+        "key_code": {
+          "type": "string"
+        },
+        "long_term_care": {
+          "$ref": "#/definitions/long_term_care"
+        },
+        "marketing": {
+          "$ref": "#/definitions/marketing"
+        },
+        "medicaid": {
+          "$ref": "#/definitions/medicaid"
+        },
+        "ok_to_email": {
+          "description": "Is Humana authorized to communicate with you about this application through email? If the answer to this question is \"Y\" then the applicant email-address field is required. If the applicant elects to sign digitally through email then answer to this question must be \"Y\".",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "osbs": {
+          "items": {
+            "$ref": "#/definitions/OSB"
+          },
+          "type": "array"
+        },
+        "other_drug_coverage": {
+          "$ref": "#/definitions/other_drug_coverage"
+        },
+        "other_group_coverage": {
+          "$ref": "#/definitions/other_group_coverage"
+        },
+        "partner": {
+          "$ref": "#/definitions/partner"
+        },
+        "partner_application_id": {
+          "description": "This is the id that is generated by the party submitting the enrollment. The maximum length is 16 characters.",
+          "maxLength": 16,
+          "type": "string"
+        },
+        "payments": {
+          "$ref": "#/definitions/payments"
+        },
+        "pharmacy_unique_id": {
+          "type": "string",
+          "maxLength": 25
+        },
+        "plan": {
+          "$ref": "#/definitions/plan"
+        },
+        "power_of_attorney": {
+          "$ref": "#/definitions/power_of_attorney"
+        },
+        "proposed_effective_date": {
+          "description": "ISO format date string, YYYY-MM-DD",
+          "format": "date",
+          "type": "string"
+        },
+        "receive_plan_coverage_material_online": {
+          "description": "Would you like to receive plan coverage documents and materials online?",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "sep_code": {
+          "description": "SEP Code is required if the Enrollment Type is \"SEP\"",
+          "enum": [
+            "CHR",
+            "CRE",
+            "ERR",
+            "LEC",
+            "LIS",
+            "LLS",
+            "LOC",
+            "LTC",
+            "MAI",
+            "MDE",
+            "MES",
+            "MOV",
+            "OTH",
+            "PAC",
+            "RET",
+            "S65",
+            "SAN",
+            "SNP",
+            "SPA",
+            "VIO",
+            "OCC",
+            "5ST",
+            "ESR",
+            "NON",
+            "TRM",
+            "MCD",
+            "NLS",
+            "DST",
+            "DIF",
+            "OEP",
+            "INC",
+            "LAW",
+            "ACC",
+            "RUS",
+            "HLP",
+            "COS",
+            "MCP",
+            "EOC",
+            "MEP",
+            "MRD",
+            "12G",
+            "12J",
+            "LCC",
+            "PAP"
+          ],
+          "type": "string"
+        },
+        "sep_date": {
+          "description": "ISO format date string, YYYY-MM-DD",
+          "example": "2016-08-01",
+          "format": "date",
+          "type": "string"
+        },
+        "sep_reason_other": {
+          "description": "Other SEP reason notes typed in by the applicant or agent.",
+          "type": "string"
+        },
+        "signature_type": {
+          "enum": [
+            "Client",
+            "POA",
+            "Witness",
+            "Agent",
+            "AlternatePayer",
+            "Spouse",
+            "ClientRightSourceMAF",
+            "POARightSourceMAF",
+            "WitnessRightSourceMAF"
+          ],
+          "type": "string"
+        },
+        "signature_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "umid": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 9
+        }
+      },
+      "required": [
+        "proposed_effective_date",
+        "enrollment_type",
+        "partner_application_id",
+        "applicant",
+        "agent",
+        "other_drug_coverage",
+        "plan",
+        "payments",
+        "signature_type",
+        "ok_to_email",
+        "partner"
+      ],
+      "type": "object"
+    },
+    "carrier": {
+      "description": "The insurance carrier data used if the applicant states that they have other group coverage.",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/address"
+        },
+        "carrier_name": {
+          "description": "Name of the Insurance carrier for your other medical coverage.",
+          "example": "BCBS of KY",
+          "type": "string"
+        }
+      },
+      "required": [
+        "carrier_name",
+        "address"
+      ],
+      "type": "object"
+    },
+    "chronic_conditions": {
+      "properties": {
+        "cardiovascular_disease": {
+          "properties": {
+            "circulation": {
+              "type": "boolean"
+            },
+            "heart_problem": {
+              "type": "boolean"
+            },
+            "leg_pain": {
+              "type": "boolean"
+            },
+            "medications": {
+              "description": "Comma delimited list of medications.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "heart_problem",
+            "circulation",
+            "leg_pain",
+            "medications"
+          ]
+        },
+        "chronic_heart_failure": {
+          "properties": {
+            "fluid": {
+              "type": "boolean"
+            },
+            "heart_failure": {
+              "type": "boolean"
+            },
+            "leg_swelling": {
+              "type": "boolean"
+            },
+            "medications": {
+              "description": "Comma delimited list of medications.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "heart_failure",
+            "fluid",
+            "leg_swelling",
+            "medications"
+          ]
+        },
+        "chronic_lung_disease": {
+          "properties": {
+            "breathing_problem": {
+              "type": "boolean"
+            },
+            "lung_problem": {
+              "type": "boolean"
+            },
+            "medications": {
+              "description": "Comma delimited list of medications.",
+              "type": "string"
+            },
+            "using_inhaler": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "breathing_problem",
+            "lung_problem",
+            "using_inhaler",
+            "medications"
+          ]
+        },
+        "diabetes": {
+          "properties": {
+            "high_blood_sugar": {
+              "type": "boolean"
+            },
+            "insulin_oral_medication": {
+              "type": "boolean"
+            },
+            "medications": {
+              "description": "Comma delimited list of medications.",
+              "type": "string"
+            },
+            "monitor_blood_sugar": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "high_blood_sugar",
+            "monitor_blood_sugar",
+            "insulin_oral_medication",
+            "medications"
+          ]
+        },
+        "end_stage_renal_disease": {
+          "properties": {
+            "have_esrd": {
+              "type": "boolean"
+            },
+            "kidney_transplant": {
+              "type": "boolean"
+            },
+            "medications": {
+              "description": "Comma delimited list of medications.",
+              "type": "string"
+            },
+            "undergoing_dialysis": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "have_esrd",
+            "undergoing_dialysis",
+            "kidney_transplant",
+            "medications"
+          ]
+        }
+      }
+    },
+    "emergency_contact": {
+      "description": "An optional emergency contact for the applicant.",
+      "properties": {
+        "first_name": {
+          "maxLength": 40,
+          "type": "string"
+        },
+        "last_name": {
+          "maxLength": 40,
+          "type": "string"
+        },
+        "middle_initial": {
+          "maxLength": 1,
+          "type": "string"
+        },
+        "phone_number": {
+          "$ref": "#/definitions/phone_number"
+        },
+        "relationship": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "first_name",
+        "last_name",
+        "relationship",
+        "phone_number"
+      ],
+      "type": "object"
+    },
+    "end_stage_renal_disease": {
+      "description": "Questions and answers pertaining to ESRD.  If diagnosed_positive is true, then the other ESRD fields are required.",
+      "properties": {
+        "diagnosed_positive": {
+          "description": "Have you been positively diagnosed with End-Stage Renal Disease (ESRD)?",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "enrolled_in_another_humana_plan": {
+          "description": "Are you enrolled in another Humana plan? This question is required if the answer to \"Have you been diagnosed positive for end stage renal disease?\" is \"Y\".",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "previously_enrolled_in_medicare_advantage": {
+          "description": "Have you previously enrolled in Medicare Advantage? This quesstion is required in the answer to \"Are you enrolled in another Humana plan?\" is \"N\"",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "require_regular_dialysis": {
+          "description": "Do you required reqular dialisys? If the answer to this question is \"Y\" then the application cannot be submitted. The applicant is inelligible.",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "successful_kidney_transplant": {
+          "description": "Have you successfully had a kidney transplant? This question is required if the answer to \"Have you previously enrolled in a medicare advantage plan?\" is \"N\". If the answer to this question is \"N\" then the application cannot be submitted. The applicant is inelligible.",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "diagnosed_positive",
+        "enrolled_in_another_humana_plan",
+        "previously_enrolled_in_medicare_advantage",
+        "require_regular_dialysis",
+        "successful_kidney_transplant"
+      ],
+      "type": "object"
+    },
+    "enrollment_response": {
+      "description": "The return structure for a successful submission of an enrollment",
+      "properties": {
+        "enrollment_id": {
+          "description": "Enrollment ID is returned for an eligible enrollment submission.",
+          "example": "9291898387",
+          "type": "string"
+        },
+        "enrollment_response_status": {
+          "description": "This attribut annotates whether the enrollment was determinted to be eligible or ineligible based on the data that was submitted.",
+          "enum": [
+            "eligible",
+            "ineligible"
+          ],
+          "type": "string"
+        },
+        "ineligible_reasons": {
+          "$ref": "#/definitions/ineligible_reasons"
+        }
+      },
+      "type": "object"
+    },
+    "enrollment_status": {
+      "description": "The return structure for a successful request for enrollment status.",
+      "properties": {
+        "as_of_date_time": {
+          "description": "Date/Time that the status was last changed.",
+          "format": "datetime",
+          "type": "string"
+        },
+        "enrollment_id": {
+          "type": "string"
+        },
+        "enrollment_status": {
+          "type": "string"
+        },
+        "enrollment_status_description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "as_of_date_time",
+        "enrollment_id",
+        "enrollment_status",
+        "enrollment_status_description"
+      ],
+      "type": "object"
+    },
+    "PharmacyConsentRequest": {
+      "required": [
+        "consent",
+        "medicare_claim_number"
+      ],
+      "properties": {
+        "consent": {
+          "type": "string",
+          "enum": [
+            "yes",
+            "no"
+          ]
+        },
+        "medicare_claim_number": {
+          "type": "string"
+        }
+      }
+    },
+    "error": {
+      "properties": {
+        "code": {
+          "description": "An application-specific error code, expressed as a string value.",
+          "example": "XB400",
+          "type": "string"
+        },
+        "detail": {
+          "description": "A human-readable explanation specific to this occurrence of the problem. Like title, this fieldâ€™s value can be localized.",
+          "example": "Enter a value in the First Name field. If you do not know the first name then enter a space. The First Name field cannot be submitted with a null.",
+          "type": "string"
+        },
+        "id": {
+          "description": "A unique identifier for this particular occurrence of the problem. Used to troubleshoot this occurance of this error.",
+          "example": "8eaeac83-edd8-4977-880d-053b42e827e0",
+          "type": "string"
+        },
+        "links": {
+          "items": {
+            "$ref": "#/definitions/link"
+          },
+          "type": "array"
+        },
+        "status": {
+          "description": "The HTTP status code applicable to this problem, expressed as an integer value (400,500).",
+          "example": 401,
+          "format": "int64",
+          "pattern": "[1-5][0-2][0-9]",
+          "type": "integer"
+        },
+        "title": {
+          "description": "A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization.",
+          "example": "User First Name cannot be empty",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "status",
+        "title"
+      ],
+      "type": "object"
+    },
+    "errors": {
+      "properties": {
+        "errors": {
+          "items": {
+            "$ref": "#/definitions/error"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      }
+    },
+    "facility": {
+      "description": "The facility data if the applicant states that they are in long-term care",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/address"
+        },
+        "institution_name": {
+          "type": "string"
+        },
+        "phone_number": {
+          "$ref": "#/definitions/phone_number"
+        }
+      },
+      "required": [
+        "institution_name",
+        "address",
+        "phone_number"
+      ],
+      "type": "object"
+    },
+    "ineligible_reason": {
+      "properties": {
+        "ineligible_code": {
+          "type": "string"
+        },
+        "ineligilbe_description": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "ineligible_reasons": {
+      "description": "If an applicant is deemed to be inelligible, this collection of reasons will be returned in a 200 response.",
+      "items": {
+        "$ref": "#/definitions/ineligible_reason"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "link": {
+      "properties": {
+        "description": {
+          "description": "The human readable definition of the purpose of this link",
+          "example": "Link to the developer portal documentation.",
+          "type": "string"
+        },
+        "href": {
+          "description": "The URI for the link",
+          "example": "http://developer.domain.com/dir/ref",
+          "type": "string"
+        },
+        "type": {
+          "description": "A name that describes the categorical purpose of the link",
+          "example": "help",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "href",
+        "description"
+      ],
+      "type": "object"
+    },
+    "long_term_care": {
+      "description": "Data collected for the long term care facility if the applicant states that they are currently in long term care.",
+      "properties": {
+        "currently_in_long_term_care": {
+          "description": "Is the applicant currently in long_term care? If the answer to this question is \"Y\" then the remaining elements in this section are required.",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "date_entered_long_term_care": {
+          "description": "ISO format date string, YYYY-MM-DD",
+          "format": "date",
+          "type": "string"
+        },
+        "facility": {
+          "$ref": "#/definitions/facility"
+        }
+      },
+      "type": "object"
+    },
+    "marketing": {
+      "description": "Data about the marketing origin or specific marketing attributes of the enrollment",
+      "properties": {
+        "campaign": {
+          "type": "string"
+        },
+        "source_of_lead": {
+          "type": "string",
+          "maxLength": 50,
+          "enum": [
+            "Book of Business",
+            "CarePlus",
+            "CMS-OEC",
+            "Event",
+            "Humana",
+            "Humana: Outbound",
+            "Marketing/Advertisement",
+            "Marketing/Advertisement: Affinity Partner",
+            "Marketing/Advertisement: Consumer Direct",
+            "Marketing/Advertisement: Inbound",
+            "Third-Party",
+            "Third-Party: Affinity Partner",
+            "Third Party Aggregator"
+          ]
+        },
+        "rs_consent_ind": {
+          "type": "boolean"
+        },
+        "veteran": {
+          "enum": [
+            "Self",
+            "Spouse",
+            "Dependent",
+            "I am not a Veteran",
+            "Prefers not to answer"
+          ],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "medicaid": {
+      "description": "this is the Medicaid data if the applicant is currently on Medicaid.",
+      "properties": {
+        "currently_on_medicaid": {
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "medicaid_number": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "other_drug_coverage": {
+      "description": "This data is required if the applicant currently has other drug insurance coverage",
+      "properties": {
+        "member_id": {
+          "type": "string"
+        },
+        "name_of_drug_coverage": {
+          "type": "string"
+        },
+        "other_rx_coverage": {
+          "description": "Do you have other prescription drug coverage? If the answer to this question is \"Y\" then the remaining elements in this section are required.",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "policy_number": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "other_rx_coverage"
+      ],
+      "type": "object"
+    },
+    "other_group_coverage": {
+      "description": "Data collected for the medical insurance coverage if the applicant states that they have other medical coverage.",
+      "properties": {
+        "carrier": {
+          "$ref": "#/definitions/carrier"
+        },
+        "does_medical_coverage_include_rx": {
+          "description": "Does this medical policy include drug coverage?",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "medical_coverage": {
+          "description": "Does the applicant have other medical coverage?",
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "phone_number": {
+          "$ref": "#/definitions/phone_number"
+        },
+        "policy_number": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "partner": {
+      "properties": {
+        "ae_id": {
+          "type": "string"
+        },
+        "id": {
+          "description": "This is the ID of the partner that the application is being submitted under.",
+          "type": "string"
+        },
+        "name": {
+          "description": "Name of the partner",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "payment": {
+      "description": "A specific payment. One payment is required",
+      "properties": {
+        "bank": {
+          "$ref": "#/definitions/ACHPayment"
+        },
+        "credit_card": {
+          "$ref": "#/definitions/CreditCardPayment"
+        },
+        "payment_amount": {
+          "description": "Monthly premium dollar amount",
+          "example": 52.33,
+          "format": "double",
+          "type": "number"
+        },
+        "payment_frequency": {
+          "default": "none",
+          "enum": [
+            "none",
+            "one_time",
+            "monthly",
+            "annually"
+          ],
+          "type": "string"
+        },
+        "payment_option": {
+          "default": "initial",
+          "enum": [
+            "initial",
+            "subsequent"
+          ],
+          "type": "string"
+        },
+        "payment_type": {
+          "enum": [
+            "coupon book",
+            "railroad retirement withholding",
+            "social security check withholding",
+            "ach",
+            "credit card"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "payment_type",
+        "payment_amount"
+      ],
+      "type": "object"
+    },
+    "payments": {
+      "description": "A collection of payments",
+      "items": {
+        "$ref": "#/definitions/payment"
+      },
+      "type": "array"
+    },
+    "phone_number": {
+      "example": "5025551234",
+      "maxLength": 10,
+      "type": "string"
+    },
+    "phone_type": {
+      "type": "string",
+      "enum": [
+        "Home",
+        "Cell",
+        "Work",
+        "Other"
+      ]
+    },
+    "plan": {
+      "description": "The plan the applicant is enrolling in.",
+      "properties": {
+        "contract_number": {
+          "type": "string"
+        },
+        "pbp_number": {
+          "type": "string"
+        },
+        "primary_care_physician": {
+          "$ref": "#/definitions/primary_care_physician"
+        }
+      },
+      "required": [
+        "contract_number",
+        "pbp_number"
+      ],
+      "type": "object"
+    },
+    "power_of_attorney": {
+      "description": "This data is required if the applicant has a power of attorney completing this enrollment for them.",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/address"
+        },
+        "first_name": {
+          "maxLength": 40,
+          "type": "string"
+        },
+        "last_name": {
+          "maxLength": 40,
+          "type": "string"
+        },
+        "phone_number": {
+          "$ref": "#/definitions/phone_number"
+        },
+        "relationship": {
+          "description": "Relationship of the Power of Attorney to the Applicant",
+          "example": "Family Friend",
+          "type": "string"
+        }
+      },
+      "required": [
+        "first_name"
+      ],
+      "type": "object"
+    },
+    "primary_care_physician": {
+      "description": "The primary care physician or povider",
+      "properties": {
+        "do_you_wish_to_identify_a_pcp": {
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "provider": {
+          "$ref": "#/definitions/provider"
+        }
+      },
+      "type": "object"
+    },
+    "provider": {
+      "properties": {
+        "established_patient": {
+          "enum": [
+            true,
+            false
+          ],
+          "type": "boolean"
+        },
+        "provider_name": {
+          "example": "Pittman, Beau B MD",
+          "type": "string"
+        },
+        "provider_number": {
+          "example": "926631",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider_name",
+        "provider_number",
+        "established_patient"
+      ],
+      "type": "object"
+    }
+  },
+  "host": "api.example.com",
+  "info": {
+    "contact": {
+      "email": "dev@example.com",
+      "name": "API Strategy and Solutions Team"
+    },
+    "description": "This API is intended for the submission of Medicare enrollment applications.",
+    "title": "Medicare Enrollment",
+    "version": "1.0.0"
+  },
+  "parameters": {
+    "Content-Type": {
+      "description": "The format of the request body",
+      "enum": [
+        "application/json"
+      ],
+      "in": "header",
+      "name": "Content-Type",
+      "required": true,
+      "type": "string"
+    },
+    "api-key": {
+      "description": "API Key",
+      "in": "header",
+      "name": "x-humana-api-key",
+      "required": true,
+      "type": "string"
+    },
+    "response-format": {
+      "description": "The requested format for the return payload (e.g., application/json, application/xml)",
+      "enum": [
+        "application/json"
+      ],
+      "in": "header",
+      "name": "Accept",
+      "required": true,
+      "type": "string"
+    }
+  },
+  "paths": {
+    "/enrollment": {
+      "post": {
+        "description": "Method for submitting a Medicare enrollment.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/api-key"
+          },
+          {
+            "$ref": "#/parameters/response-format"
+          },
+          {
+            "$ref": "#/parameters/Content-Type"
+          },
+          {
+            "name": "x-channel-code",
+            "in": "header",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "x-channel-id",
+            "in": "header",
+            "type": "string",
+            "required": false
+          },
+          {
+            "description": "The structure for the enrollment data",
+            "in": "body",
+            "name": "application",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/application"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Enrollment Response",
+            "schema": {
+              "$ref": "#/definitions/enrollment_response"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "401": {
+            "description": "Authentication Required",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "403": {
+            "description": "Unauthorized Request",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "429": {
+            "description": "Request Limit Exceeded",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          }
+        },
+        "tags": [
+          "Enrollment"
+        ]
+      }
+    },
+    "/enrollment/{enrollment_id}/pharmacy-consent": {
+      "post": {
+        "description": "Set the pharmacy consent for an enrollment",
+        "parameters": [
+          {
+            "$ref": "#/parameters/api-key"
+          },
+          {
+            "$ref": "#/parameters/response-format"
+          },
+          {
+            "$ref": "#/parameters/Content-Type"
+          },
+          {
+            "description": "The Enrollment ID for which you are submitting consent.",
+            "in": "path",
+            "name": "enrollment_id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The structure for the enrollment data",
+            "in": "body",
+            "name": "application",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PharmacyConsentRequest"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Pharmacy Consent Response"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "401": {
+            "description": "Authentication Required",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "403": {
+            "description": "Unauthorized Request",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "404": {
+            "description": "Requested Item Not Found",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "429": {
+            "description": "Request Limit Exceeded",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          }
+        },
+        "tags": [
+          "Pharmacy Consent"
+        ]
+      }
+    },
+    "/enrollment/{enrollment_id}/status": {
+      "get": {
+        "description": "Returns the status of the provided Enrollment ID",
+        "parameters": [
+          {
+            "$ref": "#/parameters/api-key"
+          },
+          {
+            "$ref": "#/parameters/response-format"
+          },
+          {
+            "$ref": "#/parameters/Content-Type"
+          },
+          {
+            "description": "The Enrollment ID for which you are requesting status.",
+            "in": "path",
+            "name": "enrollment_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Enrollment Status Response",
+            "schema": {
+              "$ref": "#/definitions/EnrollmentStatusResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "401": {
+            "description": "Authentication Required",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "403": {
+            "description": "Unauthorized Request",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "404": {
+            "description": "Requested Item Not Found",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "429": {
+            "description": "Request Limit Exceeded",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          }
+        },
+        "tags": [
+          "Enrollment Status"
+        ]
+      }
+    }
+  },
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "swagger": "2.0"
+}

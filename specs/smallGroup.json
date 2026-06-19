@@ -1,0 +1,526 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2.0.0",
+    "title": "Small Groups Book of Business API"
+  },
+  "host": "api.example.com",
+  "schemes": [
+    "https"
+  ],
+  "basePath": "/v2/small-groups",
+  "produces": [
+    "application/json",
+    "application/pdf"
+  ],
+  "parameters": {
+    "api-key": {
+      "name": "x-humana-api-key",
+      "in": "header",
+      "description": "API Key",
+      "required": true,
+      "type": "string"
+    },
+    "group_id": {
+      "name": "group_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The group number that uniquely identifies the group on which operations should be performed."
+    },
+    "accept": {
+      "name": "accept",
+      "in": "header",
+      "required": false,
+      "type": "string",
+      "enum": [
+        "application/json"
+      ]
+    },
+    "as_of_date": {
+      "name": "as_of_date",
+      "in": "query",
+      "required": false,
+      "type": "string",
+      "format": "date",
+      "description": "Date filter to look up group information.  Defaults to today's date.  Format is YYYY-MM-DD"
+    },
+    "member_details": {
+      "name": "member_details",
+      "in": "query",
+      "required": false,
+      "type": "boolean",
+      "default": true,
+      "description": "Field determines whether or not member data will be retrieved.  Defaults to true."
+    },
+    "group_details": {
+      "name": "group_details",
+      "in": "query",
+      "required": false,
+      "type": "boolean",
+      "default": true,
+      "description": "Field determines wheter or not group data will be retrieved. Defaults to true."
+    },
+    "partner_id": {
+      "name": "partner_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The partner id for a specific partner."
+    }
+  },
+  "paths": {
+    "/partners/{partner_id}/bob": {
+      "get": {
+        "description": "Return a partner's bob of business for all groups",
+        "summary": "Get Partner's book of business",
+        "parameters": [
+          {
+            "$ref": "#/parameters/api-key"
+          },
+          {
+            "$ref": "#/parameters/partner_id"
+          },
+          {
+            "$ref": "#/parameters/group_details"
+          },
+          {
+            "$ref": "#/parameters/member_details"
+          },
+          {
+            "$ref": "#/parameters/as_of_date"
+          }
+        ],
+        "tags": [
+          "BOB"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/PartnerBOBResponse"
+            }
+          },
+          "default": {
+            "description": "Error Response",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    },
+    "/partners/{partner_id}/bob/{group_id}": {
+      "get": {
+        "description": "Return a group's book of business",
+        "summary": "Get Book of Business",
+        "parameters": [
+          {
+            "$ref": "#/parameters/api-key"
+          },
+          {
+            "$ref": "#/parameters/group_id"
+          },
+          {
+            "$ref": "#/parameters/partner_id"
+          },
+          {
+            "$ref": "#/parameters/group_details"
+          },
+          {
+            "$ref": "#/parameters/member_details"
+          },
+          {
+            "$ref": "#/parameters/as_of_date"
+          }
+        ],
+        "tags": [
+          "BOB"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/GroupBOBResponse"
+            }
+          },
+          "default": {
+            "description": "Error Response",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Phone": {
+      "properties": {
+        "number": {
+          "type": "string"
+        },
+        "rank": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "Address": {
+      "properties": {
+        "address_line_1": {
+          "type": "string"
+        },
+        "address_line_2": {
+          "type": "string"
+        },
+        "address_line_3": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "county": {
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "rank": {
+          "type": "string",
+          "enum": [
+            "Other",
+            "Primary",
+            "Secondary"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "Other",
+            "Home",
+            "Work",
+            "Mailing",
+            "Billing",
+            "Location",
+            "Legal",
+            "Shipping"
+          ]
+        }
+      }
+    },
+    "Contact": {
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "middle_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "phones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Phone"
+          }
+        },
+        "addresses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Address"
+          }
+        }
+      }
+    },
+    "Plan": {
+      "properties": {
+        "effective_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "line_of_coverage": {
+          "type": "string"
+        },
+        "plan_name": {
+          "type": "string"
+        },
+        "plan_id": {
+          "type": "string"
+        },
+        "benefit_id": {
+          "type": "string"
+        }
+      }
+    },
+    "SubGroup": {
+      "properties": {
+        "plans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Plan"
+          }
+        },
+        "sub_group_id": {
+          "type": "string"
+        }
+      }
+    },
+    "GroupDetails": {
+      "properties": {
+        "contacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Contact"
+          }
+        },
+        "email": {
+          "type": "string"
+        },
+        "employee_count_on_payroll": {
+          "type": "number",
+          "format": "integer"
+        },
+        "group_name": {
+          "type": "string"
+        },
+        "group_id": {
+          "type": "string"
+        },
+        "original_effective_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "phones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Phone"
+          }
+        },
+        "addresses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Address"
+          }
+        },
+        "renewal_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sub_groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SubGroup"
+          }
+        }
+      }
+    },
+    "Policy": {
+      "properties": {
+        "effective_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "group_id": {
+          "type": "string"
+        },
+        "line_of_coverage": {
+          "type": "string"
+        },
+        "member_id_base": {
+          "type": "string"
+        },
+        "member_id_dependent_code": {
+          "type": "string"
+        },
+        "plan_name": {
+          "type": "string"
+        },
+        "plan_id": {
+          "type": "string"
+        },
+        "benefit_id": {
+          "type": "string"
+        },
+        "sub_group_id": {
+          "type": "string"
+        }
+      }
+    },
+    "Member": {
+      "properties": {
+        "date_of_hire": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "is_medicare_eligible": {
+          "type": "boolean"
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Policy"
+          }
+        },
+        "dob": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "email": {
+          "type": "string"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "middle_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "marital_status": {
+          "type": "string"
+        },
+        "phones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Phone"
+          }
+        },
+        "addresses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Address"
+          }
+        },
+        "ssn": {
+          "type": "string"
+        },
+        "subscriber_ssn": {
+          "type": "string"
+        }
+      }
+    },
+    "GroupBOBResponse": {
+      "properties": {
+        "group": {
+          "$ref": "#/definitions/GroupDetails"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Member"
+          }
+        }
+      }
+    },
+    "PartnerBOBResponse": {
+      "properties": {
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GroupDetails"
+          }
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Member"
+          }
+        }
+      }
+    },
+    "Error": {
+      "properties": {
+        "links": {
+          "items": {
+            "$ref": "#/definitions/href"
+          },
+          "type": "array"
+        },
+        "code": {
+          "description": "An application-specific error code, expressed as a string value.",
+          "example": "XB400",
+          "type": "string"
+        },
+        "detail": {
+          "description": "A human-readable explanation specific to this occurrence of the problem. Like title, this fieldÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢s value can be localized.",
+          "example": "Enter a value in the First Name field. If you do not know the first name then enter a space. The First Name field cannot be submitted with a null.",
+          "type": "string"
+        },
+        "id": {
+          "description": "A unique identifier for this particular occurrence of the problem. Used to troubleshoot this occurance of this error.",
+          "example": "error1_firstName",
+          "format": "int64",
+          "type": "integer"
+        },
+        "status": {
+          "description": "The HTTP status code applicable to this problem, expressed as an integer value (400,500).",
+          "example": 401,
+          "format": "int64",
+          "pattern": "[1-5][0-2][0-9]",
+          "type": "integer"
+        },
+        "title": {
+          "description": "A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization.",
+          "example": "User First Name cannot be empty",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "status",
+        "detail"
+      ],
+      "type": "object"
+    },
+    "Errors": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "items": {
+            "$ref": "#/definitions/Error"
+          },
+          "type": "array"
+        }
+      }
+    },
+    "href": {
+      "example": "http://www.google.com",
+      "type": "string"
+    }
+  }
+}

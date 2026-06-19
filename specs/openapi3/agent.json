@@ -1,0 +1,1118 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "2.0.0",
+        "title": "Agents API"
+    },
+    "paths": {
+        "/{san}": {
+            "get": {
+                "description": "Get Agent demographic details",
+                "summary": "Get Agent by SAN",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/api-key"
+                    },
+                    {
+                        "$ref": "#/components/parameters/san"
+                    }
+                ],
+                "tags": [
+                    "Agent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Agent"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Errors"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{san}/plans": {
+            "get": {
+                "description": "Get list of plans an Agent is allowed to sell for AOA",
+                "summary": "Get AOA Plans",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/api-key"
+                    },
+                    {
+                        "$ref": "#/components/parameters/san"
+                    },
+                    {
+                        "name": "fips",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "as_of_date",
+                        "in": "query",
+                        "required": true,
+                        "description": "ISO Format Date, defaults to today's date.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Plans"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlanResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Errors"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{san}/all-plans": {
+            "get": {
+                "description": "Get all plans an Agent is allowed to sell",
+                "summary": "Get All Plans",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/api-key"
+                    },
+                    {
+                        "$ref": "#/components/parameters/san"
+                    },
+                    {
+                        "name": "fips",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "as_of_date",
+                        "in": "query",
+                        "required": true,
+                        "description": "ISO Format Date, defaults to today's date.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "careplus",
+                        "in": "query",
+                        "required": false,
+                        "description": "Include careplus plans in the response",
+                        "schema": {
+                            "type": "boolean",
+                            "default": true
+                        }
+                    },
+                    {
+                        "name": "med_supp",
+                        "in": "query",
+                        "required": false,
+                        "description": "Include med supp plans in the response",
+                        "schema": {
+                            "type": "boolean",
+                            "default": true
+                        }
+                    }
+                ],
+                "tags": [
+                    "Plans"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AllPlanResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Errors"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{san}/certifications": {
+            "get": {
+                "description": "Get list of certifications for an Agent",
+                "summary": "Get Agent Certifications",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/api-key"
+                    },
+                    {
+                        "$ref": "#/components/parameters/san"
+                    }
+                ],
+                "tags": [
+                    "Certifications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CertificationResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Errors"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{san}/licenses": {
+            "get": {
+                "description": "Get list of licenses for an Agent",
+                "summary": "Get Agent Licenses",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/api-key"
+                    },
+                    {
+                        "$ref": "#/components/parameters/san"
+                    }
+                ],
+                "tags": [
+                    "Licenses"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LicenseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Errors"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.example.com/v1/agents"
+        }
+    ],
+    "components": {
+        "parameters": {
+            "api-key": {
+                "name": "x-humana-api-key",
+                "in": "header",
+                "description": "API Key",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "san": {
+                "name": "san",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "schemas": {
+            "AllPlanResponse": {
+                "properties": {
+                    "plans": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "contract_number": {
+                                    "type": "string"
+                                },
+                                "pbp_no": {
+                                    "type": "string"
+                                },
+                                "segment_id": {
+                                    "type": "string"
+                                },
+                                "prescription_drug_coverage": {
+                                    "type": "boolean"
+                                },
+                                "english_summary_of_benefits": {
+                                    "type": "string"
+                                },
+                                "spanish_summary_of_benefits": {
+                                    "type": "string"
+                                },
+                                "english_evidence_of_coverage": {
+                                    "type": "string"
+                                },
+                                "spanish_evidence_of_coverage": {
+                                    "type": "string"
+                                },
+                                "english_benefits_at_a_glance": {
+                                    "type": "string"
+                                },
+                                "spanish_benefits_at_a_glance": {
+                                    "type": "string"
+                                },
+                                "english_plan_rating_document": {
+                                    "type": "string"
+                                },
+                                "spanish_plan_rating_document": {
+                                    "type": "string"
+                                },
+                                "english_prescription_drug_guide": {
+                                    "type": "string"
+                                },
+                                "spanish_prescription_drug_guide": {
+                                    "type": "string"
+                                },
+                                "provider_directory": {
+                                    "type": "string"
+                                },
+                                "guide_name": {
+                                    "type": "string"
+                                },
+                                "max_out_of_pocket": {
+                                    "type": "number"
+                                },
+                                "office_copay_with_denomination": {
+                                    "type": "string"
+                                },
+                                "monthly_premium": {
+                                    "type": "number"
+                                },
+                                "part_a_deductible": {
+                                    "type": "number"
+                                },
+                                "part_b_deductible": {
+                                    "type": "number"
+                                },
+                                "lis_premium": {
+                                    "properties": {
+                                        "25": {
+                                            "type": "number"
+                                        },
+                                        "50": {
+                                            "type": "number"
+                                        },
+                                        "75": {
+                                            "type": "number"
+                                        },
+                                        "100": {
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                "lis_indicator": {
+                                    "type": "boolean"
+                                },
+                                "pfp_key": {
+                                    "type": "string"
+                                },
+                                "office_visit_copay": {
+                                    "type": "number"
+                                },
+                                "specialist_copay": {
+                                    "type": "number"
+                                },
+                                "product_type": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "PlanResponse": {
+                "properties": {
+                    "plans": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Plan"
+                        }
+                    }
+                }
+            },
+            "Plan": {
+                "properties": {
+                    "click_to_chat_flag": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "comp_form_number": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "med_supp_enroll_type": {
+                        "type": "string"
+                    },
+                    "product_type": {
+                        "type": "string"
+                    },
+                    "can_enroll": {
+                        "type": "boolean"
+                    },
+                    "monthly_premium": {
+                        "type": "number"
+                    },
+                    "discounted_premium": {
+                        "type": "number"
+                    },
+                    "med_supp_rate_type": {
+                        "type": "number"
+                    },
+                    "annual_rx_deductible": {
+                        "type": "number"
+                    },
+                    "contract_number": {
+                        "type": "string"
+                    },
+                    "ben_seq_number": {
+                        "type": "string"
+                    },
+                    "pbp_no": {
+                        "type": "string"
+                    },
+                    "part_a_deductible": {
+                        "type": "number"
+                    },
+                    "part_b_deductible": {
+                        "type": "number"
+                    },
+                    "customer_number": {
+                        "type": "string"
+                    },
+                    "med_supp_plan_type": {
+                        "type": "string"
+                    },
+                    "annual_deductible": {
+                        "type": "number"
+                    },
+                    "max_out_of_pocket": {
+                        "type": "number"
+                    },
+                    "prescription_drug_coverage": {
+                        "type": "boolean"
+                    },
+                    "fitness_club_membership": {
+                        "type": "boolean"
+                    },
+                    "english_summary_of_benefits": {
+                        "type": "string"
+                    },
+                    "spanish_summary_of_benefits": {
+                        "type": "string"
+                    },
+                    "chinese_summary_of_benefits": {
+                        "type": "string"
+                    },
+                    "directory_form_number": {
+                        "type": "string"
+                    },
+                    "active_outlook_flag": {
+                        "type": "boolean"
+                    },
+                    "vision_discount_flag": {
+                        "type": "boolean"
+                    },
+                    "vision_benefit_flag": {
+                        "type": "string"
+                    },
+                    "vision_discount_details": {
+                        "type": "string"
+                    },
+                    "rx_discount_flag": {
+                        "type": "boolean"
+                    },
+                    "outline_coverage_details": {
+                        "type": "string"
+                    },
+                    "medi_gap_details": {
+                        "type": "string"
+                    },
+                    "ss_value_added_service": {
+                        "type": "string"
+                    },
+                    "ss_steps_flag": {
+                        "type": "string"
+                    },
+                    "dental_benefit_flag": {
+                        "type": "string"
+                    },
+                    "careington_flag": {
+                        "type": "boolean"
+                    },
+                    "humana_first_flag": {
+                        "type": "boolean"
+                    },
+                    "hao_flag": {
+                        "type": "string"
+                    },
+                    "alternative_medicine_flag": {
+                        "type": "string"
+                    },
+                    "alternative_medicine_details": {
+                        "type": "string"
+                    },
+                    "hearing_discount_details": {
+                        "type": "string"
+                    },
+                    "weight_management_flag": {
+                        "type": "string"
+                    },
+                    "weight_management_details": {
+                        "type": "string"
+                    },
+                    "my_care_copay": {
+                        "type": "number"
+                    },
+                    "lis_premium": {
+                        "properties": {
+                            "25": {
+                                "type": "number"
+                            },
+                            "50": {
+                                "type": "number"
+                            },
+                            "75": {
+                                "type": "number"
+                            },
+                            "100": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "lis_indicator": {
+                        "type": "boolean"
+                    },
+                    "oracle_financial_market": {
+                        "type": "string"
+                    },
+                    "rx_code": {
+                        "type": "string"
+                    },
+                    "src_platform_cd": {
+                        "type": "string"
+                    },
+                    "issue_state_cd": {
+                        "type": "string"
+                    },
+                    "physician_rate": {
+                        "type": "number"
+                    },
+                    "specialist_rate": {
+                        "type": "number"
+                    },
+                    "hospital_rate": {
+                        "type": "number"
+                    },
+                    "rx_cost": {
+                        "type": "number"
+                    },
+                    "hospital_stay_flag": {
+                        "type": "string"
+                    },
+                    "rx_discount_details": {
+                        "type": "string"
+                    },
+                    "careington_details": {
+                        "type": "string"
+                    },
+                    "physician_cost": {
+                        "type": "number"
+                    },
+                    "specialist_cost": {
+                        "type": "number"
+                    },
+                    "hospital_cost": {
+                        "type": "number"
+                    },
+                    "mla_flag": {
+                        "type": "boolean"
+                    },
+                    "english_evidence_of_coverage": {
+                        "type": "string"
+                    },
+                    "spanish_evidence_of_coverage": {
+                        "type": "string"
+                    },
+                    "chinese_evidence_of_coverage": {
+                        "type": "string"
+                    },
+                    "english_benefits_at_a_glance": {
+                        "type": "string"
+                    },
+                    "spanish_benefits_at_a_glance": {
+                        "type": "string"
+                    },
+                    "english_plan_rating_document": {
+                        "type": "string"
+                    },
+                    "spanish_plan_rating_document": {
+                        "type": "string"
+                    },
+                    "english_prescription_drug_guide": {
+                        "type": "string"
+                    },
+                    "spanish_prescription_drug_guide": {
+                        "type": "string"
+                    },
+                    "drug_guide": {
+                        "type": "string"
+                    },
+                    "provider_directory": {
+                        "type": "string"
+                    },
+                    "tier1": {
+                        "type": "string"
+                    },
+                    "tier2": {
+                        "type": "string"
+                    },
+                    "tier3": {
+                        "type": "string"
+                    },
+                    "tier4": {
+                        "type": "string"
+                    },
+                    "plan_type": {
+                        "type": "string"
+                    },
+                    "guide_name": {
+                        "type": "string"
+                    },
+                    "inpatient_total_deductible": {
+                        "type": "number"
+                    },
+                    "inpatient_par_deductible": {
+                        "type": "number"
+                    },
+                    "part_b_par_deductible": {
+                        "type": "number"
+                    },
+                    "part_b_total_deductible": {
+                        "type": "number"
+                    },
+                    "mla_office_visit_copay": {
+                        "type": "number"
+                    },
+                    "mla_specialist_copay": {
+                        "type": "number"
+                    },
+                    "pfp_key": {
+                        "type": "string"
+                    },
+                    "office_copay_with_denomination": {
+                        "type": "string"
+                    },
+                    "specialist_copay_with_denomination": {
+                        "type": "string"
+                    },
+                    "hospital_you_pay_from_ci": {
+                        "type": "string"
+                    },
+                    "feed_source": {
+                        "type": "string"
+                    },
+                    "plan_source_id": {
+                        "type": "string"
+                    },
+                    "inpatient_hospital_tier_text": {
+                        "type": "string"
+                    },
+                    "routine_dental_service": {
+                        "type": "boolean"
+                    },
+                    "routine_vision_service": {
+                        "type": "boolean"
+                    },
+                    "otc_drugs_and_supplies_service": {
+                        "type": "boolean"
+                    },
+                    "routine_transportation_service": {
+                        "type": "boolean"
+                    },
+                    "segment_id": {
+                        "type": "string"
+                    },
+                    "is_snp_plan": {
+                        "type": "boolean"
+                    },
+                    "is_rule_23_selected": {
+                        "type": "boolean"
+                    },
+                    "is_rule_26_selected": {
+                        "type": "boolean"
+                    },
+                    "is_rule_27_selected": {
+                        "type": "boolean"
+                    },
+                    "is_rule_7_selected": {
+                        "type": "boolean"
+                    },
+                    "physician_copay_tier": {
+                        "properties": {
+                            "1": {
+                                "type": "string"
+                            },
+                            "2": {
+                                "type": "string"
+                            },
+                            "3": {
+                                "type": "string"
+                            },
+                            "4": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "specialist_copay_tier": {
+                        "properties": {
+                            "1": {
+                                "type": "string"
+                            },
+                            "2": {
+                                "type": "string"
+                            },
+                            "3": {
+                                "type": "string"
+                            },
+                            "4": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "Address": {
+                "properties": {
+                    "address_line_1": {
+                        "type": "string"
+                    },
+                    "address_line_2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "zip": {
+                        "type": "string"
+                    },
+                    "county": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Agent": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "correspondance_name": {
+                        "type": "string"
+                    },
+                    "tax_name": {
+                        "type": "string"
+                    },
+                    "dba": {
+                        "type": "string",
+                        "description": "Doing Business As Name"
+                    },
+                    "san": {
+                        "type": "string"
+                    },
+                    "tax_number": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "properties": {
+                            "primary": {
+                                "type": "string"
+                            },
+                            "secondary": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "fax_number": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "county": {
+                        "type": "string"
+                    },
+                    "business_address": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "shipping_address": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "residence_address": {
+                        "$ref": "#/components/schemas/Address"
+                    },
+                    "producer_type": {
+                        "type": "string",
+                        "enum": [
+                            "career_agent",
+                            "delegated_agent",
+                            "agency"
+                        ]
+                    },
+                    "is_termed": {
+                        "type": "boolean"
+                    },
+                    "gender": {
+                        "type": "string"
+                    },
+                    "npn": {
+                        "type": "string",
+                        "description": "national producer number"
+                    },
+                    "rso": {
+                        "type": "string"
+                    },
+                    "status_code": {
+                        "type": "string"
+                    },
+                    "status_description": {
+                        "type": "string"
+                    },
+                    "dob": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01"
+                    },
+                    "status_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01"
+                    },
+                    "base_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01"
+                    },
+                    "hire_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01"
+                    },
+                    "suffix_name": {
+                        "type": "string"
+                    },
+                    "title_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "middle_initial": {
+                        "type": "string"
+                    },
+                    "market_sources": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MarketSource"
+                        }
+                    }
+                }
+            },
+            "MarketSource": {
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "properties": {
+                            "code": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "change_date": {
+                                "type": "string",
+                                "format": "date"
+                            }
+                        }
+                    },
+                    "effective_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "reporting_segment_description": {
+                        "type": "string"
+                    },
+                    "product_type": {
+                        "type": "string"
+                    }
+                }
+            },
+            "LicenseResponse": {
+                "properties": {
+                    "licenses": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/License"
+                        }
+                    }
+                }
+            },
+            "LineOfAuthority": {
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "effective_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01"
+                    },
+                    "term_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01",
+                        "description": "if date is 9999-12-31, then there is no term date."
+                    },
+                    "status": {
+                        "type": "string"
+                    }
+                }
+            },
+            "License": {
+                "properties": {
+                    "state": {
+                        "type": "string"
+                    },
+                    "line_of_authorities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/LineOfAuthority"
+                        }
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "terminated",
+                            "term_pend",
+                            "list_pend",
+                            "revoked",
+                            "suspended",
+                            "closed_out",
+                            "inactive"
+                        ]
+                    },
+                    "issue_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01"
+                    },
+                    "effective_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01"
+                    },
+                    "expiration_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01"
+                    },
+                    "license_number": {
+                        "type": "string"
+                    },
+                    "license_class": {
+                        "properties": {
+                            "code": {
+                                "type": "number",
+                                "format": "int",
+                                "example": 5
+                            },
+                            "description": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "residency_status": {
+                        "type": "boolean",
+                        "description": "Indicates if state is also the resident state of the Producer."
+                    }
+                }
+            },
+            "CertificationResponse": {
+                "properties": {
+                    "certifications": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Certificate"
+                        }
+                    }
+                }
+            },
+            "Certificate": {
+                "properties": {
+                    "effective_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01"
+                    },
+                    "certificate_type_code": {
+                        "type": "string"
+                    },
+                    "term_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1970-01-01"
+                    },
+                    "marketplace_user_id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Error": {
+                "properties": {
+                    "code": {
+                        "description": "An application-specific error code, expressed as a string value.",
+                        "example": "XB400",
+                        "type": "string"
+                    },
+                    "detail": {
+                        "description": "A human-readable explanation specific to this occurrence of the problem. Like title, this fieldÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢s value can be localized.",
+                        "example": "Enter a value in the First Name field. If you do not know the first name then enter a space. The First Name field cannot be submitted with a null.",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "The HTTP status code applicable to this problem, expressed as an integer value (400,500).",
+                        "example": 401,
+                        "format": "int64",
+                        "pattern": "[1-5][0-2][0-9]",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "code",
+                    "detail"
+                ],
+                "type": "object"
+            },
+            "Errors": {
+                "type": "object",
+                "properties": {
+                    "errors": {
+                        "items": {
+                            "$ref": "#/components/schemas/Error"
+                        },
+                        "type": "array"
+                    }
+                }
+            },
+            "href": {
+                "example": "http://www.google.com",
+                "type": "string"
+            }
+        }
+    }
+}

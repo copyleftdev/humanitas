@@ -1,0 +1,176 @@
+swagger: "2.0"
+info:
+  description: "Drug List API will be a low-latency RESTful API accessible to Internet applications to provide saving a member drug list."
+  version: "1.0.0"
+  title: "Humana Drug List API"
+  termsOfService: ""
+  contact:
+    email: "dev@example.com"
+host: "api.example.com"
+basePath: "/druglistapi"
+tags:
+- name: "SaveDrugList"
+  description: "Save a member’s potential drug list."
+schemes:
+- "https"
+paths:
+  /savedruglist:
+    post:
+      tags:
+      - "SaveDrugList"
+      summary: "Add a member’s potential drug list."
+      description: "This method will allow the caller to save a member’s potential drug list."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Drug list request object to be stored."
+        required: true
+        schema:
+          $ref: "#/definitions/DrugListRequest"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/SaveDrugListResponse"
+        "400":
+          description: "Bad Request"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+        "405":
+          description: "Method Not Allowed"
+        "406":
+          description: "Not Acceptable"
+        "429":
+          description: "Too Many Requests"
+        "500":
+          description: "Internal Server Error"
+        "503":
+          description: "Service Unavailable"
+      security:
+      - client_key: []
+      - api_client_id: []
+securityDefinitions:
+  client_key:
+    type: "apiKey"
+    name: "ClientKey"
+    in: "header"
+  api_client_id:
+    type: "apiKey"
+    name: "x-humana-api-key"
+    in: "header"
+definitions:
+  DrugListRequest:
+    type: "object"
+    required:
+      - zipCode
+      - fipsCode
+      - planYear
+      - consentToShare
+      - drugListSource
+      - drugs
+    properties:
+      zipCode:
+        type: "string"
+        format: "string"
+      fipsCode:
+        type: "string"
+        format: "string"
+      planYear:
+        type: "string"
+        format: "string"
+      consentToShare:
+        type: "boolean"
+        default: false
+      drugListSource:
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "BlueButton"
+          - "Milliman"
+          - "Manual"
+          - "Other"
+      drugs:
+        type: "array"
+        items:
+          type: "object"
+          required:
+            - ndc
+            - quantity
+            - daysSupply
+          properties:
+            ndc:
+              type: "string"
+              format: "string"
+            quantity:
+              type: "number"
+              format: "double"
+            daysSupply:
+              type: "integer"
+              format: "int64"
+              enum:
+              - 1
+              - 4
+              - 30
+            fillMonths:
+              type: "array"
+              items:
+                type: "string"
+                enum:
+                - "January"
+                - "February"
+                - "March"
+                - "April"
+                - "May"
+                - "June"
+                - "July"
+                - "August"
+                - "September"
+                - "October"
+                - "November"
+                - "December"
+            refillFrequency:
+              type: "integer"
+              format: "int64"
+              enum:
+              - 1
+              - 2
+              - 3
+              - 4
+              - 5
+              - 6
+              - 7
+              - 8
+              - 9
+              - 10
+              - 11
+              - 12
+  SaveDrugListResponse:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+          uid:
+            type: "string"
+            format: "string"
+          responseCode:
+            type: "integer"
+            format: "int64"
+          responseMessage:
+            type: "string"
+            format: "string"
+      error:
+        type: "object"
+        properties:
+          message:
+            type: "string"
+            format: "string"

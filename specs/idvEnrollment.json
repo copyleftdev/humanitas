@@ -1,0 +1,861 @@
+{
+  "basePath": "/v1/idv-enrollment",
+  "consumes": [
+    "application/json"
+  ],
+  "definitions": {
+    "ACHPayment": {
+      "properties": {
+        "accountNumber": {
+          "maxLength": 16,
+          "type": "string"
+        },
+        "accountType": {
+          "enum": [
+            "none",
+            "checking",
+            "savings"
+          ],
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 28,
+          "type": "string"
+        },
+        "routingNumber": {
+          "maxLength": 9,
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "accountNumber",
+        "routingNumber",
+        "accountType"
+      ]
+    },
+    "CreditCardPayment": {
+      "properties": {
+        "cardHolder": {
+          "description": "Name of the owner of the credit card.",
+          "type": "string"
+        },
+        "expiration": {
+          "description": "Credit card expiration date, in month/year format.",
+          "example": "7/20",
+          "maxLength": 8,
+          "type": "string"
+        },
+        "number": {
+          "description": "Credit Card number, either token or number are required.",
+          "maxLength": 16,
+          "type": "string"
+        },
+        "token": {
+          "description": "Credit Card token, either token or number are required.",
+          "maxLength": 16,
+          "type": "string"
+        },
+        "type": {
+          "description": "Credit Card type",
+          "enum": [
+            "discover",
+            "visa",
+            "mastercard",
+            "amex",
+            "none"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "cardHolder",
+        "expiration"
+      ]
+    },
+    "error": {
+      "properties": {
+        "code": {
+          "description": "An application-specific error code, expressed as a string value.",
+          "example": "XB400",
+          "type": "string"
+        },
+        "detail": {
+          "description": "A human-readable explanation specific to this occurrence of the problem. Like title, this field’s value can be localized.",
+          "example": "Enter a value in the First Name field. If you do not know the first name then enter a space. The First Name field cannot be submitted with a null.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "detail"
+      ],
+      "type": "object"
+    },
+    "errors": {
+      "properties": {
+        "errors": {
+          "items": {
+            "$ref": "#/definitions/error"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      }
+    },
+    "payment": {
+      "description": "A specific payment. Both an initial and subsequent payment are required.",
+      "properties": {
+        "bank": {
+          "$ref": "#/definitions/ACHPayment"
+        },
+        "creditCard": {
+          "$ref": "#/definitions/CreditCardPayment"
+        },
+        "amount": {
+          "example": 52.33,
+          "format": "double",
+          "type": "number"
+        },
+        "additionalAmount": {
+          "type": "number",
+          "default": 0
+        },
+        "frequency": {
+          "description": "If option is initial, then default value is one_time. If option is subsequent, then default value is monthly.",
+          "enum": [
+            "one_time",
+            "monthly",
+            "annually"
+          ],
+          "type": "string"
+        },
+        "option": {
+          "default": "initial",
+          "enum": [
+            "initial",
+            "subsequent"
+          ],
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "coupon_book",
+            "railroad_retirement_withholding",
+            "social_security_check_withholding",
+            "ach",
+            "credit_card"
+          ],
+          "type": "string"
+        },
+        "initialPaymentDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "recurringPaymentDateOption": {
+          "type": "string",
+          "enum": [
+            "5",
+            "15",
+            "25"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "amount"
+      ],
+      "type": "object"
+    },
+    "IDVAddress": {
+      "required": [
+        "type",
+        "lineOne",
+        "city",
+        "state",
+        "zip"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "permanent",
+            "mailing"
+          ]
+        },
+        "lineOne": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "lineTwo": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 25
+        },
+        "state": {
+          "type": "string",
+          "maxLength": 2
+        },
+        "fips": {
+          "type": "string",
+          "maxLength": 5
+        },
+        "zip": {
+          "type": "string",
+          "maxLength": 5
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 10
+        }
+      }
+    },
+    "IDVPerson": {
+      "properties": {
+        "lastName": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "firstName": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "middleInitial": {
+          "type": "string",
+          "maxLength": 1
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "gender": {
+          "type": "string",
+          "default": "unknown",
+          "enum": [
+            "male",
+            "female",
+            "unknown"
+          ]
+        },
+        "married": {
+          "type": "boolean",
+          "default": false
+        },
+        "email": {
+          "type": "string"
+        },
+        "ssn": {
+          "type": "string",
+          "maxLength": 9
+        },
+        "confirmEmail": {
+          "type": "boolean"
+        },
+        "okToEmail": {
+          "type": "boolean",
+          "default": false
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "isStudent": {
+          "type": "boolean"
+        },
+        "isDisabled": {
+          "type": "boolean",
+          "default": null
+        },
+        "medClaimNumber": {
+          "type": "string"
+        },
+        "medicareId": {
+          "type": "string",
+          "maxLength": 12
+        },
+        "dentalFacilityNumber": {
+          "type": "string"
+        },
+        "dentistName": {
+          "type": "string"
+        },
+        "addresses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IDVAddress"
+          }
+        },
+        "preferredCommunication": {
+          "type": "string"
+        },
+        "signature": {
+          "properties": {
+            "date": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "value": {
+              "description": "The actual signature of the person.",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "idvapplication": {
+      "required": [
+        "applicant",
+        "effectiveDate",
+        "agent",
+        "partner",
+        "plan",
+        "payments"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique Identifier for the application",
+          "maxLength": 16
+        },
+        "effectiveDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "cancelReason": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "partner": {
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "example": "65",
+              "description": "matches SourceSystemId"
+            },
+            "name": {
+              "type": "string"
+            },
+            "locationCode": {
+              "type": "string"
+            }
+          }
+        },
+        "agent": {
+          "required": [
+            "san"
+          ],
+          "properties": {
+            "san": {
+              "type": "string",
+              "example": "1234567",
+              "minLength": 7,
+              "maxLength": 7
+            },
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "signature": {
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "value": {
+                  "description": "The actual signature of the person.",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "plan": {
+          "required": [
+            "code",
+            "premiumAmount",
+            "idvPlanId",
+            "adminFee",
+            "enrollmentFee",
+            "totalInitialPayment"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "maxLength": 10
+            },
+            "idvPlanId": {
+              "type": "string",
+              "example": "606"
+            },
+            "premiumAmount": {
+              "type": "number",
+              "minimum": 1
+            },
+            "adminFee": {
+              "type": "number"
+            },
+            "applicationFee": {
+              "type": "number",
+              "default": 0
+            },
+            "associationFee": {
+              "type": "number"
+            },
+            "enrollmentFee": {
+              "type": "number"
+            },
+            "totalInitialPayment": {
+              "type": "number"
+            },
+            "additionalFees": {
+              "type": "array",
+              "default": [],
+              "items": {
+                "type": "number"
+              },
+              "maxLength": 3
+            },
+            "amountReceived": {
+              "type": "number",
+              "minimum": 1
+            },
+            "disenrollDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "isEnrollmentFeeWaived": {
+              "type": "boolean"
+            }
+          }
+        },
+        "applicant": {
+          "required": [
+            "lastName",
+            "firstName",
+            "dateOfBirth",
+            "addresses"
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/IDVPerson"
+            },
+            {
+              "properties": {
+                "preferredLanguage": {
+                  "type": "string",
+                  "enum": [
+                    "english",
+                    "spanish",
+                    "other",
+                    "arabic",
+                    "afrikaans",
+                    "french_creole",
+                    "spanish_creole",
+                    "armenian",
+                    "bengali",
+                    "bulgarian",
+                    "burmese",
+                    "cebuano",
+                    "chinese",
+                    "mandarin",
+                    "navajo",
+                    "creole",
+                    "czech",
+                    "dutch",
+                    "egyptian",
+                    "portuguese",
+                    "estonian",
+                    "farsi",
+                    "tagalog",
+                    "filipino",
+                    "vietnamese",
+                    "finnish",
+                    "french",
+                    "german",
+                    "greek",
+                    "gujarati",
+                    "haitian_creole",
+                    "hausa",
+                    "hebrew",
+                    "hindi",
+                    "hmong",
+                    "hungarian",
+                    "igbo",
+                    "indonesian",
+                    "italian",
+                    "japanese",
+                    "kannada",
+                    "kashmiri",
+                    "khmer",
+                    "korean",
+                    "lao",
+                    "luganda",
+                    "malayalam",
+                    "marathi",
+                    "nepali",
+                    "nigerian",
+                    "punjabi",
+                    "papiamento",
+                    "persian",
+                    "polish",
+                    "romanian",
+                    "russian",
+                    "american_sign_lang",
+                    "sindhi",
+                    "slovak",
+                    "sinhalese",
+                    "somali",
+                    "serbian",
+                    "swahili",
+                    "swedish",
+                    "tamil",
+                    "telugu",
+                    "thai",
+                    "turkish",
+                    "ukrainian",
+                    "urdu",
+                    "yiddish",
+                    "cantonese",
+                    "zulu"
+                  ],
+                  "default": "english",
+                  "example": "english"
+                },
+                "otherLanguage": {
+                  "type": "string",
+                  "description": "If the applicant has a different format for their preferred language.",
+                  "enum": [
+                    "audio",
+                    "large_print",
+                    "accessible_screen_reader_pdf",
+                    "oral_over_the_phone",
+                    "braille"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "spouse": {
+          "required": [
+            "lastName",
+            "firstName",
+            "dateOfBirth"
+          ],
+          "allOf": [
+            {
+              "$ref": "#/definitions/IDVPerson"
+            }
+          ]
+        },
+        "powerOfAttorney": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/IDVPerson"
+            }
+          ]
+        },
+        "alternatePayer": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/IDVPerson"
+            }
+          ]
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "required": [
+              "lastName",
+              "firstName",
+              "dateOfBirth",
+              "isStudent"
+            ],
+            "allOf": [
+              {
+                "$ref": "#/definitions/IDVPerson"
+              }
+            ]
+          }
+        },
+        "priorCoverage": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "dental": {
+                "properties": {
+                  "insuranceCompanyName": {
+                    "type": "string",
+                    "maxLength": 30
+                  },
+                  "coverageType": {
+                    "type": "string",
+                    "enum": [
+                      "not_available",
+                      "cleanings_exams_xrays",
+                      "fillings_crowns_dentures_root_canals",
+                      "discounts"
+                    ]
+                  },
+                  "coverage12Months": {
+                    "type": "boolean"
+                  },
+                  "coveragePolicyNumber": {
+                    "type": "string",
+                    "maxLength": 20
+                  },
+                  "coverageEffectiveDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "coverageEndDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "isCoverageActive": {
+                    "type": "boolean"
+                  },
+                  "nameOfInsured": {
+                    "type": "string"
+                  },
+                  "coverageReplacing": {
+                    "type": "string"
+                  }
+                }
+              },
+              "vision": {
+                "properties": {
+                  "insuranceCompanyName": {
+                    "type": "string",
+                    "maxLength": 30
+                  },
+                  "nameOfInsured": {
+                    "type": "string"
+                  },
+                  "coverage12Months": {
+                    "type": "boolean"
+                  },
+                  "coverageEffectiveDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "coverageEndDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "coverageReplacing": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "productsDiscussed": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "category": {
+                "type": "string",
+                "maxLength": 5
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 32
+              }
+            }
+          }
+        },
+        "payments": {
+          "description": "A collection of payments, both an initial and subsequent payment are required.",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/definitions/payment"
+          },
+          "type": "array"
+        },
+        "sourceTracking": {
+          "properties": {
+            "saleTier1": {
+              "type": "string",
+              "maxLength": 50
+            },
+            "saleTier2": {
+              "type": "string",
+              "maxLength": 50
+            },
+            "location": {
+              "type": "string",
+              "maxLength": 50
+            }
+          }
+        },
+        "veteran": {
+          "description": "Only required when selecting a Veteran plan.",
+          "required": [
+            "serviceLength",
+            "relation",
+            "serviceBranch",
+            "serviceEntryDate",
+            "serviceDischargeDate"
+          ],
+          "properties": {
+            "serviceLength": {
+              "type": "number"
+            },
+            "relation": {
+              "type": "string",
+              "enum": [
+                "veteran",
+                "spouse_of_veteran",
+                "department_of_veteran",
+                "not_applicable"
+              ]
+            },
+            "serviceBranch": {
+              "type": "string",
+              "enum": [
+                "airforce",
+                "army",
+                "coast_guard",
+                "marine_corps",
+                "national_guard",
+                "navy"
+              ]
+            },
+            "serviceEntryDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "serviceDischargeDate": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "IDVResponse": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Enrollment Identifier"
+        },
+        "complianceMessage": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "host": "api.example.com",
+  "info": {
+    "contact": {
+      "email": "dev@example.com",
+      "name": "API Strategy and Solutions Team"
+    },
+    "description": "This API is intended for the submission of IDV enrollment applications.",
+    "title": "IDV Enrollment",
+    "version": "1.0.0"
+  },
+  "parameters": {
+    "api-key": {
+      "description": "API Key",
+      "in": "header",
+      "name": "x-humana-api-key",
+      "required": true,
+      "type": "string"
+    }
+  },
+  "paths": {
+    "/enrollment": {
+      "post": {
+        "description": "Method for submitting a IDV enrollment.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/api-key"
+          },
+          {
+            "description": "The structure for the enrollment data",
+            "in": "body",
+            "name": "application",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/idvapplication"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Enrollment Response",
+            "schema": {
+              "$ref": "#/definitions/IDVResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "401": {
+            "description": "Authentication Required",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "403": {
+            "description": "Unauthorized Request",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "429": {
+            "description": "Request Limit Exceeded",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "schema": {
+              "$ref": "#/definitions/errors"
+            }
+          }
+        },
+        "tags": [
+          "Enrollment"
+        ]
+      }
+    }
+  },
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "swagger": "2.0"
+}
