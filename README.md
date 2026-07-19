@@ -1,5 +1,7 @@
 # Humanitas
 
+[![Tip my tokens](https://tokentip.to/badge/copyleftdev.svg?logo=1)](https://tokentip.to/@copyleftdev)
+
 > An elite, **Effect-native** TypeScript SDK for the **Humana Data Exchange** APIs — *unofficial*.
 
 Humanitas is to Humana what [Tutela](../../gardian-inc/tutela) is to Guardian: a hand-crafted, fully-typed client built on [Effect](https://effect.website) over the provider's published OpenAPI/Swagger and FHIR specifications. Every call returns a typed `Effect` with a closed, tagged error channel; ids are nominally branded; and request builders are gated by the type system so an incomplete call **does not compile**.
